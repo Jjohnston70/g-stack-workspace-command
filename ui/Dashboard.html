@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .loading { opacity: 0.6; pointer-events: none; }
+    .card { transition: all 0.2s ease; }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+    .kpi-value { font-size: 2rem; font-weight: 700; }
+    .health-good { background-color: #dcfce7; color: #15803d; }
+    .health-warning { background-color: #fef3c7; color: #d97706; }
+    .health-error { background-color: #fee2e2; color: #dc2626; }
+  </style>
+</head>
+<body class="bg-gray-100 p-6">
+  <div id="dashboard" class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-800" id="companyName">Operations Toolkit</h1>
+        <p class="text-gray-500 text-sm">Last updated: <span id="lastUpdated">Loading...</span></p>
+      </div>
+      <div class="flex gap-3">
+        <button onclick="refreshData()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium">
+          Refresh
+        </button>
+      </div>
+    </div>
+
+    <!-- KPI Cards Row 1 - Drive Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+      <!-- Files Inventoried -->
+      <div class="card bg-white rounded-xl shadow-md p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-500 text-sm font-medium">Files Inventoried</p>
+            <p class="kpi-value text-gray-800" id="totalFiles">0</p>
+            <p class="text-xs text-gray-400">In Drive Inventory</p>
+          </div>
+          <div class="text-4xl">&#128193;</div>
+        </div>
+      </div>
+
+      <!-- Folders Scanned -->
+      <div class="card bg-white rounded-xl shadow-md p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-500 text-sm font-medium">Folders Scanned</p>
+            <p class="kpi-value text-blue-600" id="totalFolders">0</p>
+            <p class="text-xs text-gray-400">In structure</p>
+          </div>
+          <div class="text-4xl">&#128194;</div>
+        </div>
+      </div>
+
+      <!-- Total Size -->
+      <div class="card bg-white rounded-xl shadow-md p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-500 text-sm font-medium">Total Size</p>
+            <p class="kpi-value text-green-600" id="totalSize">0 MB</p>
+            <p class="text-xs text-gray-400">Inventoried files</p>
+          </div>
+          <div class="text-4xl">&#128190;</div>
+        </div>
+      </div>
+
+      <!-- Potential Duplicates -->
+      <div class="card bg-white rounded-xl shadow-md p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-500 text-sm font-medium">Duplicates</p>
+            <p class="kpi-value text-amber-600" id="duplicateCount">0</p>
+            <p class="text-xs text-gray-400">Potential duplicates</p>
+          </div>
+          <div class="text-4xl">&#128203;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI Cards Row 2 - Gmail Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+      <!-- Gmail Labels -->
+      <div class="card bg-white rounded-xl shadow-md p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-500 text-sm font-medium">Gmail Labels</p>
+            <p class="kpi-value text-indigo-600" id="labelCount">0</p>
+            <p class="text-xs text-gray-400">Configured</p>
+          </div>
+          <div class="text-4xl">&#127991;</div>
+        </div>
+      </div>
+
+      <!-- Captured Leads -->
+      <div class="card bg-white rounded-xl shadow-md p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-500 text-sm font-medium">Captured Leads</p>
+            <p class="kpi-value text-purple-600" id="capturedLeads">0</p>
+            <p class="text-xs text-gray-400"><span id="newLeads">0</span> new</p>
+          </div>
+          <div class="text-4xl">&#127919;</div>
+        </div>
+      </div>
+
+      <!-- Auto-Label Rules -->
+      <div class="card bg-white rounded-xl shadow-md p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-500 text-sm font-medium">Auto-Label Rules</p>
+            <p class="kpi-value text-teal-600" id="autoLabelRules">0</p>
+            <p class="text-xs text-gray-400">Active rules</p>
+          </div>
+          <div class="text-4xl">&#9881;</div>
+        </div>
+      </div>
+
+      <!-- Recommendations -->
+      <div class="card bg-white rounded-xl shadow-md p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-500 text-sm font-medium">Move Recommendations</p>
+            <p class="kpi-value text-rose-600" id="recommendations">0</p>
+            <p class="text-xs text-gray-400">Files to organize</p>
+          </div>
+          <div class="text-4xl">&#128269;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+      <!-- Files by Category -->
+      <div class="card bg-white rounded-xl shadow-md p-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Files by Category</h3>
+        <div class="h-56">
+          <canvas id="categoryChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Files by Suggested Folder -->
+      <div class="card bg-white rounded-xl shadow-md p-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Suggested Destinations</h3>
+        <div class="h-56">
+          <canvas id="suggestedChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Lead Sources -->
+      <div class="card bg-white rounded-xl shadow-md p-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Lead Sources</h3>
+        <div class="h-56">
+          <canvas id="leadSourceChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tables Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <!-- Recent Leads Table -->
+      <div class="card bg-white rounded-xl shadow-md p-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Captured Leads</h3>
+        <div class="overflow-x-auto max-h-64 overflow-y-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b text-left text-gray-500">
+                <th class="pb-3">Date</th>
+                <th class="pb-3">Subject</th>
+                <th class="pb-3">Source</th>
+                <th class="pb-3">Status</th>
+              </tr>
+            </thead>
+            <tbody id="leadsTable">
+              <tr><td colspan="4" class="py-4 text-center text-gray-400">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Large Files Table -->
+      <div class="card bg-white rounded-xl shadow-md p-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Large Files (>10MB)</h3>
+        <div class="overflow-x-auto max-h-64 overflow-y-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b text-left text-gray-500">
+                <th class="pb-3">File Name</th>
+                <th class="pb-3">Size</th>
+                <th class="pb-3">Location</th>
+              </tr>
+            </thead>
+            <tbody id="largeFilesTable">
+              <tr><td colspan="3" class="py-4 text-center text-gray-400">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- System Health -->
+    <div class="card bg-white rounded-xl shadow-md p-6 mb-6">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4">System Health</h3>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="p-4 rounded-lg" id="inventoryHealth">
+          <p class="font-medium">Drive Inventory</p>
+          <p class="text-sm" id="inventoryHealthStatus">Checking...</p>
+        </div>
+        <div class="p-4 rounded-lg" id="gmailHealth">
+          <p class="font-medium">Gmail Automation</p>
+          <p class="text-sm" id="gmailHealthStatus">Checking...</p>
+        </div>
+        <div class="p-4 rounded-lg" id="labelsHealth">
+          <p class="font-medium">Gmail Labels</p>
+          <p class="text-sm" id="labelsHealthStatus">Checking...</p>
+        </div>
+        <div class="p-4 rounded-lg" id="triggersHealth">
+          <p class="font-medium">Triggers</p>
+          <p class="text-sm" id="triggersHealthStatus">Checking...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center mt-6 text-gray-400 text-sm">
+      <p>Operations Toolkit | True North Data Strategies</p>
+    </div>
+  </div>
+
+  <script>
+    const SPREADSHEET_ID = '<?= spreadsheetId ?>';
+    let categoryChart = null;
+    let suggestedChart = null;
+    let leadSourceChart = null;
+
+    document.addEventListener('DOMContentLoaded', refreshData);
+
+    function refreshData() {
+      document.getElementById('dashboard').classList.add('loading');
+      google.script.run
+        .withSuccessHandler(updateDashboard)
+        .withFailureHandler(handleError)
+        .getDashboardData(SPREADSHEET_ID);
+    }
+
+    function updateDashboard(data) {
+      document.getElementById('dashboard').classList.remove('loading');
+
+      // Header
+      document.getElementById('companyName').textContent = data.companyName || 'Operations Toolkit';
+      document.getElementById('lastUpdated').textContent = data.lastUpdated;
+
+      // Drive KPIs
+      document.getElementById('totalFiles').textContent = data.driveStats.totalFiles;
+      document.getElementById('totalFolders').textContent = data.driveStats.totalFolders;
+      document.getElementById('totalSize').textContent = data.driveStats.totalSize;
+      document.getElementById('duplicateCount').textContent = data.driveStats.duplicates;
+
+      // Gmail KPIs
+      document.getElementById('labelCount').textContent = data.gmailStats.labels;
+      document.getElementById('capturedLeads').textContent = data.gmailStats.capturedLeads;
+      document.getElementById('newLeads').textContent = data.gmailStats.newLeads;
+      document.getElementById('autoLabelRules').textContent = data.gmailStats.autoLabelRules;
+      document.getElementById('recommendations').textContent = data.driveStats.recommendations;
+
+      // Tables
+      updateLeadsTable(data.recentLeads);
+      updateLargeFilesTable(data.largeFiles);
+
+      // System Health
+      updateSystemHealth(data.health);
+
+      // Charts
+      updateCharts(data.charts);
+    }
+
+    function updateLeadsTable(leads) {
+      const tbody = document.getElementById('leadsTable');
+
+      if (!leads || leads.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-gray-400">No leads captured yet</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = leads.map(l => `
+        <tr class="border-b hover:bg-gray-50">
+          <td class="py-3 text-gray-500">${l.date}</td>
+          <td class="py-3">
+            <div class="font-medium">${escapeHtml(l.subject)}</div>
+          </td>
+          <td class="py-3 text-gray-600">${l.source}</td>
+          <td class="py-3">
+            <span class="px-2 py-1 rounded-full text-xs ${getStatusClass(l.status)}">
+              ${l.status}
+            </span>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function updateLargeFilesTable(files) {
+      const tbody = document.getElementById('largeFilesTable');
+
+      if (!files || files.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-gray-400">No large files found</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = files.map(f => `
+        <tr class="border-b hover:bg-gray-50">
+          <td class="py-3">
+            <div class="font-medium">${escapeHtml(f.name)}</div>
+          </td>
+          <td class="py-3 text-gray-600">${f.size}</td>
+          <td class="py-3 text-gray-500 text-xs">${escapeHtml(f.path)}</td>
+        </tr>
+      `).join('');
+    }
+
+    function getStatusClass(status) {
+      switch(status) {
+        case 'New': return 'bg-blue-100 text-blue-700';
+        case 'Contacted': return 'bg-green-100 text-green-700';
+        case 'Added to CRM': return 'bg-purple-100 text-purple-700';
+        default: return 'bg-gray-100 text-gray-700';
+      }
+    }
+
+    function updateSystemHealth(health) {
+      // Drive Inventory
+      const invEl = document.getElementById('inventoryHealth');
+      const invStatusEl = document.getElementById('inventoryHealthStatus');
+      invEl.className = 'p-4 rounded-lg ' + getHealthClass(health.inventory.status);
+      invStatusEl.textContent = health.inventory.message;
+
+      // Gmail
+      const gmailEl = document.getElementById('gmailHealth');
+      const gmailStatusEl = document.getElementById('gmailHealthStatus');
+      gmailEl.className = 'p-4 rounded-lg ' + getHealthClass(health.gmail.status);
+      gmailStatusEl.textContent = health.gmail.message;
+
+      // Labels
+      const labelsEl = document.getElementById('labelsHealth');
+      const labelsStatusEl = document.getElementById('labelsHealthStatus');
+      labelsEl.className = 'p-4 rounded-lg ' + getHealthClass(health.labels.status);
+      labelsStatusEl.textContent = health.labels.message;
+
+      // Triggers
+      const triggersEl = document.getElementById('triggersHealth');
+      const triggersStatusEl = document.getElementById('triggersHealthStatus');
+      triggersEl.className = 'p-4 rounded-lg ' + getHealthClass(health.triggers.status);
+      triggersStatusEl.textContent = health.triggers.message;
+    }
+
+    function getHealthClass(status) {
+      switch(status) {
+        case 'good': return 'health-good';
+        case 'warning': return 'health-warning';
+        case 'error': return 'health-error';
+        default: return 'bg-gray-100';
+      }
+    }
+
+    function updateCharts(chartData) {
+      const colors = ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444', '#06b6d4', '#ec4899'];
+
+      // Category Doughnut Chart
+      const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+      if (categoryChart) categoryChart.destroy();
+
+      categoryChart = new Chart(categoryCtx, {
+        type: 'doughnut',
+        data: {
+          labels: chartData.categoryLabels,
+          datasets: [{
+            data: chartData.categoryCounts,
+            backgroundColor: colors.slice(0, chartData.categoryLabels.length),
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+          }
+        }
+      });
+
+      // Suggested Folder Bar Chart
+      const suggestedCtx = document.getElementById('suggestedChart').getContext('2d');
+      if (suggestedChart) suggestedChart.destroy();
+
+      suggestedChart = new Chart(suggestedCtx, {
+        type: 'bar',
+        data: {
+          labels: chartData.suggestedLabels,
+          datasets: [{
+            data: chartData.suggestedCounts,
+            backgroundColor: '#6366f1',
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: 'y',
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { beginAtZero: true, ticks: { stepSize: 1 } }
+          }
+        }
+      });
+
+      // Lead Source Pie Chart
+      const leadCtx = document.getElementById('leadSourceChart').getContext('2d');
+      if (leadSourceChart) leadSourceChart.destroy();
+
+      leadSourceChart = new Chart(leadCtx, {
+        type: 'pie',
+        data: {
+          labels: chartData.leadSourceLabels,
+          datasets: [{
+            data: chartData.leadSourceCounts,
+            backgroundColor: colors.slice(0, chartData.leadSourceLabels.length),
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+          }
+        }
+      });
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function handleError(error) {
+      document.getElementById('dashboard').classList.remove('loading');
+      console.error('Dashboard error:', error);
+      alert('Error loading dashboard: ' + error.message);
+    }
+  </script>
+</body>
+</html>

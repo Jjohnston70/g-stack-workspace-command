@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Google Sans', Roboto, Arial, sans-serif;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #333;
+      background: #f8f9fa;
+    }
+    .header {
+      background: linear-gradient(135deg, #1a73e8 0%, #4285f4 100%);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header h1 { font-size: 20px; font-weight: 500; margin-bottom: 5px; }
+    .header p { opacity: 0.9; font-size: 12px; }
+    .header .industry-badge {
+      background: rgba(255,255,255,0.2);
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      display: inline-block;
+      margin-top: 8px;
+    }
+    .nav {
+      background: white;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      position: sticky;
+      top: 85px;
+      z-index: 99;
+    }
+    .nav-btn {
+      background: #e8f0fe;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 16px;
+      cursor: pointer;
+      font-size: 11px;
+      color: #1a73e8;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover, .nav-btn.active {
+      background: #1a73e8;
+      color: white;
+    }
+    .content { padding: 15px; }
+    .section {
+      background: white;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    .section-header {
+      background: #f1f3f4;
+      padding: 12px 15px;
+      font-weight: 500;
+      font-size: 14px;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-content { padding: 15px; }
+    .step-card {
+      background: #f8f9fa;
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-left: 3px solid #1a73e8;
+    }
+    .step-card.green { border-left-color: #34a853; }
+    .step-card.orange { border-left-color: #fbbc04; }
+    .step-card.purple { border-left-color: #9334e6; }
+    .step-num {
+      background: #1a73e8;
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 500;
+      margin-right: 8px;
+    }
+    .step-title { font-weight: 500; margin-bottom: 5px; }
+    .step-desc { font-size: 12px; color: #5f6368; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin: 10px 0;
+    }
+    th {
+      background: #e8f0fe;
+      text-align: left;
+      padding: 8px;
+      font-weight: 500;
+    }
+    td {
+      padding: 8px;
+      border-bottom: 1px solid #f1f3f4;
+    }
+    tr:hover td { background: #f8f9fa; }
+    .menu-path {
+      display: inline-block;
+      background: #1a73e8;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 10px;
+    }
+    .tip {
+      background: #e8f5e9;
+      border-left: 3px solid #34a853;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 0 4px 4px 0;
+      font-size: 12px;
+    }
+    .warning {
+      background: #fff3e0;
+      border-left: 3px solid #fb8c00;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 0 4px 4px 0;
+      font-size: 12px;
+    }
+    .industry-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .industry-item {
+      background: #f8f9fa;
+      padding: 8px;
+      border-radius: 4px;
+      text-align: center;
+      font-size: 11px;
+    }
+    .industry-item .emoji { font-size: 20px; display: block; margin-bottom: 4px; }
+    .folder-tree {
+      background: #f8f9fa;
+      padding: 12px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 12px;
+    }
+    .folder-tree .folder { color: #1a73e8; }
+    .folder-tree .subfolder { color: #5f6368; padding-left: 20px; }
+    .close-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #1a73e8;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 24px;
+      cursor: pointer;
+      font-size: 14px;
+      box-shadow: 0 2px 10px rgba(26,115,232,0.3);
+    }
+    .close-btn:hover { background: #1557b0; }
+    h3 {
+      font-size: 13px;
+      color: #202124;
+      margin: 15px 0 10px 0;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    h3:first-child { margin-top: 0; }
+    ul { padding-left: 20px; margin: 8px 0; }
+    li { margin: 4px 0; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>{{MENU_ICON}} {{SHORT_NAME}} User Manual</h1>
+    <p>Operations Toolkit for {{COMPANY_NAME}}</p>
+    <div class="industry-badge">Industry: {{INDUSTRY_NAME}}</div>
+  </div>
+
+  <div class="nav">
+    <button class="nav-btn active" onclick="showSection('start')">Getting Started</button>
+    <button class="nav-btn" onclick="showSection('industries')">Industry Templates</button>
+    <button class="nav-btn" onclick="showSection('drive')">Drive Tools</button>
+    <button class="nav-btn" onclick="showSection('gmail')">Gmail Tools</button>
+    <button class="nav-btn" onclick="showSection('runner')">Function Runner</button>
+    <button class="nav-btn" onclick="showSection('trouble')">Troubleshooting</button>
+  </div>
+
+  <div class="content">
+    <!-- GETTING STARTED -->
+    <div id="section-start" class="section-container">
+      <div class="section">
+        <div class="section-header">
+          <span>Quick Start Guide</span>
+        </div>
+        <div class="section-content">
+          <div class="step-card">
+            <div class="step-title"><span class="step-num">1</span>Initialize All Sheets</div>
+            <div class="step-desc">Sets up all required sheets with proper formatting</div>
+            <div style="margin-top:8px"><span class="menu-path">Setup & Initialize > Initialize All Sheets</span></div>
+          </div>
+          <div class="step-card green">
+            <div class="step-title"><span class="step-num" style="background:#34a853">2</span>Create Drive Folders</div>
+            <div class="step-desc">Creates your organized folder structure in Google Drive</div>
+            <div style="margin-top:8px"><span class="menu-path">Drive Tools > Create Folder Structure</span></div>
+          </div>
+          <div class="step-card orange">
+            <div class="step-title"><span class="step-num" style="background:#fbbc04">3</span>Create Gmail Labels</div>
+            <div class="step-desc">Creates color-coded labels for email organization</div>
+            <div style="margin-top:8px"><span class="menu-path">Gmail Tools > Create Gmail Labels</span></div>
+          </div>
+          <div class="step-card purple">
+            <div class="step-title"><span class="step-num" style="background:#9334e6">4</span>Enable Auto-Label</div>
+            <div class="step-desc">Turn on automatic email labeling based on rules</div>
+            <div style="margin-top:8px"><span class="menu-path">Gmail Tools > Create Auto-Label Trigger</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span>Your Configuration</span>
+        </div>
+        <div class="section-content">
+          <table>
+            <tr><th>Setting</th><th>Value</th></tr>
+            <tr><td>Company</td><td><strong>{{COMPANY_NAME}}</strong></td></tr>
+            <tr><td>Industry</td><td>{{INDUSTRY_NAME}}</td></tr>
+            <tr><td>Menu Icon</td><td>{{MENU_ICON}}</td></tr>
+            <tr><td>Support</td><td>jacob@truenorthstrategyops.com</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- INDUSTRIES -->
+    <div id="section-industries" class="section-container" style="display:none">
+      <div class="section">
+        <div class="section-header">
+          <span>Available Industry Templates</span>
+        </div>
+        <div class="section-content">
+          <p>The Operations Toolkit includes pre-configured templates for different industries. Your toolkit is configured for <strong>{{INDUSTRY_NAME}}</strong>.</p>
+
+          <h3>All Available Templates</h3>
+          <div class="industry-grid">
+            <div class="industry-item"><span class="emoji">🏠</span>Real Estate</div>
+            <div class="industry-item"><span class="emoji">💼</span>Consulting</div>
+            <div class="industry-item"><span class="emoji">🔧</span>Construction</div>
+            <div class="industry-item"><span class="emoji">🏥</span>Healthcare</div>
+            <div class="industry-item"><span class="emoji">🛒</span>E-Commerce</div>
+            <div class="industry-item"><span class="emoji">🏢</span>General</div>
+            <div class="industry-item"><span class="emoji">📊</span>Analytics</div>
+            <div class="industry-item"><span class="emoji">🚗</span>Fleet</div>
+            <div class="industry-item"><span class="emoji">⭐</span>Strategy</div>
+          </div>
+
+          <h3>Each Template Includes</h3>
+          <ul>
+            <li><strong>Folder structure</strong> - Organized folders for Google Drive</li>
+            <li><strong>Gmail labels</strong> - Color-coded email labels</li>
+            <li><strong>Auto-label rules</strong> - Automatic email sorting</li>
+          </ul>
+
+          <div class="tip">
+            <strong>Need a different template?</strong> Contact support to reconfigure your toolkit for a different industry.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DRIVE TOOLS -->
+    <div id="section-drive" class="section-container" style="display:none">
+      <div class="section">
+        <div class="section-header">
+          <span>Drive Folder Tools</span>
+        </div>
+        <div class="section-content">
+          <h3>Create Folder Structure</h3>
+          <p>Creates an organized folder hierarchy in your Google Drive.</p>
+          <div style="margin:10px 0"><span class="menu-path">Drive Tools > Create Folder Structure</span></div>
+
+          <h3>Scan My Drive</h3>
+          <p>Catalogs all files with size, owner, and organization recommendations.</p>
+          <ul>
+            <li>Scans up to 1,000 files per run</li>
+            <li>Creates inventory and summary sheets</li>
+            <li>Identifies duplicates and large files</li>
+          </ul>
+
+          <h3>Analysis Tools</h3>
+          <table>
+            <tr><th>Tool</th><th>What It Does</th></tr>
+            <tr><td>Find Duplicates</td><td>Lists files with same name and size</td></tr>
+            <tr><td>Find Large Files</td><td>Lists files over 10MB</td></tr>
+            <tr><td>Find Old Files</td><td>Lists files not modified in 1+ years</td></tr>
+            <tr><td>Move Recommendations</td><td>Suggests where to move files</td></tr>
+          </table>
+
+          <div class="tip">
+            <strong>Pro tip:</strong> Share the root folder with team members to give them access to all subfolders at once.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GMAIL TOOLS -->
+    <div id="section-gmail" class="section-container" style="display:none">
+      <div class="section">
+        <div class="section-header">
+          <span>Gmail Label Tools</span>
+        </div>
+        <div class="section-content">
+          <h3>Create Gmail Labels</h3>
+          <p>Creates color-coded labels customized for {{INDUSTRY_NAME}} businesses.</p>
+          <div style="margin:10px 0"><span class="menu-path">Gmail Tools > Create Gmail Labels</span></div>
+
+          <h3>Auto-Label Rules</h3>
+          <p>Automatically labels incoming emails based on sender and subject.</p>
+
+          <p><strong>To customize rules:</strong></p>
+          <ol>
+            <li>Go to the <strong>Auto-Label Rules</strong> sheet</li>
+            <li>Edit rules or add new rows</li>
+            <li>Check the <strong>Active</strong> box to enable</li>
+          </ol>
+
+          <h3>Label Migration</h3>
+          <p>Migrate from old Gmail labels to the new organized structure.</p>
+          <ol>
+            <li>Scan Labels - find all existing labels</li>
+            <li>Review Suggestions - check automated matches</li>
+            <li>Select Labels - check which to migrate</li>
+            <li>Execute Migration - move the emails</li>
+          </ol>
+
+          <div class="warning">
+            <strong>Note:</strong> "Delete All Created Labels" only removes labels created by this tool. Your existing labels are safe.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FUNCTION RUNNER -->
+    <div id="section-runner" class="section-container" style="display:none">
+      <div class="section">
+        <div class="section-header">
+          <span>Function Runner</span>
+        </div>
+        <div class="section-content">
+          <p>Run any function by clicking a checkbox - no coding required!</p>
+
+          <h3>Setup (One Time)</h3>
+          <ol>
+            <li><span class="menu-path">Setup & Initialize > Initialize Function Runner</span></li>
+            <li><span class="menu-path">Setup & Initialize > Setup Function Runner Trigger</span></li>
+          </ol>
+
+          <h3>How to Use</h3>
+          <ol>
+            <li>Go to the <strong>Function Runner</strong> sheet</li>
+            <li>Find the function you want to run</li>
+            <li>Check the <strong>Run</strong> checkbox</li>
+            <li>Function executes immediately</li>
+            <li>Result appears in <strong>Last Result</strong> column</li>
+          </ol>
+
+          <h3>Available Functions</h3>
+          <table>
+            <tr><th>Function</th><th>Description</th></tr>
+            <tr><td>createAllLabels</td><td>Create Gmail labels</td></tr>
+            <tr><td>createFolderStructure</td><td>Create Drive folders</td></tr>
+            <tr><td>scanMyDrive</td><td>Catalog all files</td></tr>
+            <tr><td>autoLabelInbox</td><td>Label emails now</td></tr>
+            <tr><td>findDuplicates</td><td>Find duplicate files</td></tr>
+          </table>
+
+          <div class="tip">
+            <strong>Safety:</strong> Functions marked "Requires Confirm" will ask before running.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TROUBLESHOOTING -->
+    <div id="section-trouble" class="section-container" style="display:none">
+      <div class="section">
+        <div class="section-header">
+          <span>Troubleshooting</span>
+        </div>
+        <div class="section-content">
+          <h3>Common Issues</h3>
+          <table>
+            <tr><th>Problem</th><th>Solution</th></tr>
+            <tr>
+              <td>Menu not showing</td>
+              <td>Refresh the page (Ctrl+R or Cmd+R)</td>
+            </tr>
+            <tr>
+              <td>Permission errors</td>
+              <td>Re-authorize when prompted; check Extensions > Apps Script > Triggers</td>
+            </tr>
+            <tr>
+              <td>Functions timing out</td>
+              <td>Drive scans limited to 1,000 files; run on smaller batches</td>
+            </tr>
+            <tr>
+              <td>Labels not in Gmail</td>
+              <td>Refresh Gmail (F5); run "List Existing Labels" to verify</td>
+            </tr>
+            <tr>
+              <td>Auto-label not working</td>
+              <td>Check that trigger is set up; verify rules are Active</td>
+            </tr>
+          </table>
+
+          <h3>Need Help?</h3>
+          <p>Contact: <strong>jacob@truenorthstrategyops.com</strong></p>
+
+          <div class="tip">
+            <strong>Before contacting support:</strong>
+            <ul>
+              <li>Note the exact error message</li>
+              <li>Which function/menu you were using</li>
+              <li>What you expected to happen</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="close-btn" onclick="google.script.host.close()">Close</button>
+
+  <script>
+    function showSection(id) {
+      document.querySelectorAll('.section-container').forEach(s => s.style.display = 'none');
+      document.getElementById('section-' + id).style.display = 'block';
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+  </script>
+</body>
+</html>

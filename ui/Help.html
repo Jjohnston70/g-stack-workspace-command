@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Google Sans', Roboto, Arial, sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #333;
+      padding: 0;
+      background: #f8f9fa;
+    }
+    .header {
+      background: linear-gradient(135deg, #1a73e8 0%, #4285f4 100%);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header h1 {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+    .header p {
+      opacity: 0.9;
+      font-size: 12px;
+    }
+    .nav {
+      background: white;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      position: sticky;
+      top: 65px;
+      z-index: 99;
+    }
+    .nav-btn {
+      background: #e8f0fe;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 16px;
+      cursor: pointer;
+      font-size: 11px;
+      color: #1a73e8;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover {
+      background: #1a73e8;
+      color: white;
+    }
+    .nav-btn.active {
+      background: #1a73e8;
+      color: white;
+    }
+    .content {
+      padding: 15px;
+    }
+    .section {
+      background: white;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    .section-header {
+      background: #f1f3f4;
+      padding: 12px 15px;
+      font-weight: 500;
+      font-size: 14px;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-header .icon {
+      font-size: 18px;
+    }
+    .section-content {
+      padding: 15px;
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .feature-card {
+      background: #f8f9fa;
+      border-radius: 6px;
+      padding: 12px;
+      border-left: 3px solid #1a73e8;
+    }
+    .feature-card.green { border-left-color: #34a853; }
+    .feature-card.orange { border-left-color: #fbbc04; }
+    .feature-card.red { border-left-color: #ea4335; }
+    .feature-card.purple { border-left-color: #9334e6; }
+    .feature-title {
+      font-weight: 500;
+      margin-bottom: 5px;
+      color: #202124;
+    }
+    .feature-desc {
+      font-size: 12px;
+      color: #5f6368;
+      margin-bottom: 8px;
+    }
+    .feature-how {
+      background: white;
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+    .feature-how strong {
+      color: #1a73e8;
+    }
+    h3 {
+      font-size: 13px;
+      color: #202124;
+      margin: 15px 0 10px 0;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    h3:first-child { margin-top: 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin: 10px 0;
+    }
+    th {
+      background: #e8f0fe;
+      text-align: left;
+      padding: 8px;
+      font-weight: 500;
+    }
+    td {
+      padding: 8px;
+      border-bottom: 1px solid #f1f3f4;
+      vertical-align: top;
+    }
+    tr:hover td {
+      background: #f8f9fa;
+    }
+    code {
+      background: #f1f3f4;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Roboto Mono', monospace;
+      font-size: 11px;
+    }
+    .sheet-ref {
+      display: inline-block;
+      background: #34a853;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 10px;
+      margin: 2px 0;
+    }
+    .menu-path {
+      display: inline-block;
+      background: #1a73e8;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 10px;
+    }
+    .tip {
+      background: #e8f5e9;
+      border-left: 3px solid #34a853;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 0 4px 4px 0;
+      font-size: 12px;
+    }
+    .warning {
+      background: #fff3e0;
+      border-left: 3px solid #fb8c00;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 0 4px 4px 0;
+      font-size: 12px;
+    }
+    .trigger-badge {
+      display: inline-block;
+      background: #9334e6;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 10px;
+    }
+    ul, ol {
+      padding-left: 20px;
+      margin: 8px 0;
+    }
+    li {
+      margin: 4px 0;
+    }
+    .close-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #1a73e8;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 24px;
+      cursor: pointer;
+      font-size: 14px;
+      box-shadow: 0 2px 10px rgba(26,115,232,0.3);
+    }
+    .close-btn:hover {
+      background: #1557b0;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Workspace Tools - Complete Guide</h1>
+    <p>Everything you can do with your automation toolkit</p>
+  </div>
+
+  <div class="nav">
+    <button class="nav-btn active" onclick="showSection('overview')">Overview</button>
+    <button class="nav-btn" onclick="showSection('gmail')">Gmail Tools</button>
+    <button class="nav-btn" onclick="showSection('migration')">Label Migration</button>
+    <button class="nav-btn" onclick="showSection('drive')">Drive Tools</button>
+    <button class="nav-btn" onclick="showSection('runner')">Function Runner</button>
+    <button class="nav-btn" onclick="showSection('sheets')">Sheets Guide</button>
+    <button class="nav-btn" onclick="showSection('triggers')">Automation</button>
+    <button class="nav-btn" onclick="showSection('advanced')">Advanced</button>
+  </div>
+
+  <div class="content">
+    <!-- OVERVIEW SECTION -->
+    <div id="section-overview" class="section-container">
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">🚀</span> Initial Setup (node setup.js)
+        </div>
+        <div class="section-content">
+          <p>When you ran <code>node setup.js</code> to deploy this module, you were prompted to configure:</p>
+
+          <h3>1. Company Information</h3>
+          <div class="feature-card">
+            <div class="feature-desc">
+              <code>Company Name:</code> Your full company name<br>
+              <code>Short Name:</code> Abbreviated name for menus<br>
+              <code>Email:</code> Support contact email<br>
+              <code>Phone:</code> Contact phone number
+            </div>
+          </div>
+
+          <h3>2. Menu Emoji Selection</h3>
+          <div class="feature-card green">
+            <div class="feature-desc">
+              Choose an emoji that appears in the Google Sheets menu:
+            </div>
+            <div class="feature-how">
+              <code>1</code> 🏢 Building (General)<br>
+              <code>2</code> 🏠 House (Real Estate)<br>
+              <code>3</code> 💼 Briefcase (Consulting)<br>
+              <code>4</code> 🔧 Wrench (Construction)<br>
+              <code>5</code> 🏥 Hospital (Healthcare)<br>
+              <code>6</code> 🛒 Cart (E-Commerce)<br>
+              <code>7</code> 💻 Computer (Technology)<br>
+              <code>8</code> 📊 Chart (Analytics)<br>
+              <code>9</code> 🚗 Car (Fleet)<br>
+              <code>10</code> ⭐ Star (Premium)
+            </div>
+          </div>
+
+          <h3>3. Industry Template Selection</h3>
+          <div class="feature-card orange">
+            <div class="feature-desc">
+              Your industry selection determines the folder structure, Gmail labels, and auto-label rules:
+            </div>
+            <div class="feature-how">
+              <code>1</code> 💼 Consulting / Agency<br>
+              <code>2</code> 🏠 Real Estate<br>
+              <code>3</code> 🔧 Construction / Trades<br>
+              <code>4</code> 🏥 Healthcare / Medical<br>
+              <code>5</code> 🛒 E-Commerce / Retail<br>
+              <code>6</code> 💻 Technology / SaaS<br>
+              <code>7</code> 💰 Finance / Accounting<br>
+              <code>8</code> ⚖️ Legal / Law Firm<br>
+              <code>9</code> 📚 Education / Training<br>
+              <code>10</code> 🚗 Fleet / Automotive<br>
+              <code>11</code> 📊 Analytics / Data<br>
+              <code>12</code> 🏢 General Business
+            </div>
+          </div>
+
+          <div class="tip">
+            <strong>To change settings:</strong> Re-run <code>node setup.js</code> in the module folder to create a new deployment with different options.
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">🎯</span> Quick Start
+        </div>
+        <div class="section-content">
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="feature-title">1. Initialize Everything</div>
+              <div class="feature-desc">Sets up all required sheets with proper formatting</div>
+              <div class="feature-how">
+                <strong>Menu:</strong> Setup & Initialize > Initialize All Sheets
+              </div>
+            </div>
+            <div class="feature-card green">
+              <div class="feature-title">2. Create Drive Folders</div>
+              <div class="feature-desc">Creates organized folder structure in Google Drive</div>
+              <div class="feature-how">
+                <strong>Menu:</strong> Drive Tools > Create Folder Structure
+              </div>
+            </div>
+            <div class="feature-card orange">
+              <div class="feature-title">3. Create Gmail Labels</div>
+              <div class="feature-desc">Creates color-coded labels for email organization</div>
+              <div class="feature-how">
+                <strong>Menu:</strong> Gmail Tools > Create Gmail Labels
+              </div>
+            </div>
+            <div class="feature-card purple">
+              <div class="feature-title">4. Open Sidebar</div>
+              <div class="feature-desc">Quick access dashboard with key actions</div>
+              <div class="feature-how">
+                <strong>Menu:</strong> Open Sidebar
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">📋</span> Sheets Created by This Tool
+        </div>
+        <div class="section-content">
+          <table>
+            <tr>
+              <th>Sheet Name</th>
+              <th>Purpose</th>
+              <th>How to Use</th>
+            </tr>
+            <tr>
+              <td><span class="sheet-ref">Gmail Labels</span></td>
+              <td>Tracks all Gmail labels created</td>
+              <td>View which labels exist and when created</td>
+            </tr>
+            <tr>
+              <td><span class="sheet-ref">Auto-Label Rules</span></td>
+              <td>Customize email auto-labeling</td>
+              <td>Edit rules to auto-sort incoming emails</td>
+            </tr>
+            <tr>
+              <td><span class="sheet-ref">Captured Leads</span></td>
+              <td>Leads captured from emails</td>
+              <td>Track and manage lead follow-ups</td>
+            </tr>
+            <tr>
+              <td><span class="sheet-ref">Email Statistics</span></td>
+              <td>Daily email volume tracking</td>
+              <td>Monitor email patterns over time</td>
+            </tr>
+            <tr>
+              <td><span class="sheet-ref">Response Templates</span></td>
+              <td>Email response templates</td>
+              <td>Add/edit templates for quick replies</td>
+            </tr>
+            <tr>
+              <td><span class="sheet-ref">Drive Inventory</span></td>
+              <td>Catalog of all Drive files</td>
+              <td>Search and organize your files</td>
+            </tr>
+            <tr>
+              <td><span class="sheet-ref">Move Recommendations</span></td>
+              <td>Suggested file organization</td>
+              <td>Get suggestions for file cleanup</td>
+            </tr>
+            <tr>
+              <td><span class="sheet-ref">Label Migration</span></td>
+              <td>Migrate old labels to new structure</td>
+              <td>Scan, review, and migrate email labels</td>
+            </tr>
+            <tr>
+              <td><span class="sheet-ref">Function Runner</span></td>
+              <td>Run functions via checkboxes</td>
+              <td>Safe way to execute any function</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">🏢</span> Industry Templates
+        </div>
+        <div class="section-content">
+          <p>Your Workspace Tools are customized for your industry with pre-configured folders, labels, and auto-label rules.</p>
+          <table>
+            <tr>
+              <th>Industry</th>
+              <th>Emoji</th>
+              <th>Best For</th>
+            </tr>
+            <tr>
+              <td>Consulting / Agency</td>
+              <td>💼</td>
+              <td>Consultants, agencies, professional services</td>
+            </tr>
+            <tr>
+              <td>Real Estate</td>
+              <td>🏠</td>
+              <td>Agents, brokerages, property managers</td>
+            </tr>
+            <tr>
+              <td>Construction / Trades</td>
+              <td>🔧</td>
+              <td>Contractors, construction, trades businesses</td>
+            </tr>
+            <tr>
+              <td>Healthcare / Medical</td>
+              <td>🏥</td>
+              <td>Medical practices, healthcare providers</td>
+            </tr>
+            <tr>
+              <td>E-Commerce / Retail</td>
+              <td>🛒</td>
+              <td>Online stores, retail businesses</td>
+            </tr>
+            <tr>
+              <td>Technology / SaaS</td>
+              <td>💻</td>
+              <td>Software companies, tech startups</td>
+            </tr>
+            <tr>
+              <td>Analytics / Data</td>
+              <td>📊</td>
+              <td>Data analysts, BI consultants</td>
+            </tr>
+            <tr>
+              <td>Fleet / Automotive</td>
+              <td>🚗</td>
+              <td>Fleet management, automotive businesses</td>
+            </tr>
+            <tr>
+              <td>Strategy / Premium</td>
+              <td>⭐</td>
+              <td>Strategy consulting, premium services</td>
+            </tr>
+            <tr>
+              <td>General Business</td>
+              <td>🏢</td>
+              <td>General purpose for any business</td>
+            </tr>
+          </table>
+          <div class="tip">
+            <strong>Each template includes:</strong> Folder structure for Drive, Gmail labels for email organization, and auto-label rules for incoming emails.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GMAIL SECTION -->
+    <div id="section-gmail" class="section-container" style="display:none;">
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">🏷️</span> Gmail Labels
+        </div>
+        <div class="section-content">
+          <h3>Labels Created</h3>
+          <table>
+            <tr><th>Parent Label</th><th>Sub-Labels</th><th>Purpose</th></tr>
+            <tr>
+              <td><strong>Clients</strong></td>
+              <td>Buyers, Sellers, Prospects, Past Clients</td>
+              <td>Organize client communications</td>
+            </tr>
+            <tr>
+              <td><strong>Transactions</strong></td>
+              <td>Active, Pending, Closed</td>
+              <td>Track deal-related emails</td>
+            </tr>
+            <tr>
+              <td><strong>Listings</strong></td>
+              <td>Active, Coming Soon, Sold</td>
+              <td>Property listing communications</td>
+            </tr>
+            <tr>
+              <td><strong>Leads</strong></td>
+              <td>Website, Zillow, Realtor.com, Referral, Open House</td>
+              <td>Sort leads by source</td>
+            </tr>
+            <tr>
+              <td><strong>Vendors</strong></td>
+              <td>Title, Lenders, Inspectors, Contractors</td>
+              <td>Vendor communications</td>
+            </tr>
+            <tr>
+              <td><strong>Admin</strong></td>
+              <td>Brokerage, MLS, License</td>
+              <td>Administrative emails</td>
+            </tr>
+            <tr>
+              <td><strong>Action Required</strong></td>
+              <td>-</td>
+              <td>Emails needing response (red)</td>
+            </tr>
+            <tr>
+              <td><strong>Waiting For Response</strong></td>
+              <td>-</td>
+              <td>Awaiting replies (orange)</td>
+            </tr>
+          </table>
+
+          <div class="tip">
+            <strong>Delete Labels:</strong> Use <span class="menu-path">Gmail Tools > Delete All Created Labels</span> to remove all labels created by this tool. Your existing labels won't be affected.
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">🤖</span> Auto-Label Rules (Customizable!)
+        </div>
+        <div class="section-content">
+          <p>Emails are automatically labeled based on rules you can customize.</p>
+
+          <h3>How to Customize Auto-Label Rules</h3>
+          <ol>
+            <li>Go to the <span class="sheet-ref">Auto-Label Rules</span> sheet</li>
+            <li>Edit existing rules or add new rows</li>
+            <li>Set <strong>Active</strong> checkbox to enable/disable rules</li>
+          </ol>
+
+          <h3>Rule Columns Explained</h3>
+          <table>
+            <tr><th>Column</th><th>What to Enter</th><th>Example</th></tr>
+            <tr>
+              <td><strong>Label</strong></td>
+              <td>The Gmail label to apply</td>
+              <td>Leads/Zillow</td>
+            </tr>
+            <tr>
+              <td><strong>From Contains</strong></td>
+              <td>Match sender email/domain (comma-separated)</td>
+              <td>zillow.com, zillowgroup.com</td>
+            </tr>
+            <tr>
+              <td><strong>Subject Contains</strong></td>
+              <td>Match words in subject (comma-separated)</td>
+              <td>new lead, inquiry, interested</td>
+            </tr>
+            <tr>
+              <td><strong>Active</strong></td>
+              <td>Checkbox to enable/disable</td>
+              <td>✓</td>
+            </tr>
+          </table>
+
+          <h3>Default Auto-Label Rules</h3>
+          <table>
+            <tr><th>Label Applied</th><th>Triggered By</th></tr>
+            <tr><td>Leads/Zillow</td><td>From: zillow.com, zillowgroup.com</td></tr>
+            <tr><td>Leads/Realtor.com</td><td>From: realtor.com, move.com</td></tr>
+            <tr><td>Leads/Website</td><td>Subject: website inquiry, contact form, new lead</td></tr>
+            <tr><td>Vendors/Title</td><td>Subject: title, closing, escrow</td></tr>
+            <tr><td>Vendors/Lenders</td><td>Subject: mortgage, loan, pre-approval</td></tr>
+            <tr><td>Vendors/Inspectors</td><td>Subject: inspection, inspector</td></tr>
+            <tr><td>Admin/MLS</td><td>From: mls, mlslistings</td></tr>
+            <tr><td>Marketing</td><td>Subject: marketing, campaign, newsletter</td></tr>
+          </table>
+
+          <div class="tip">
+            <strong>Run Auto-Label:</strong> <span class="menu-path">Gmail Tools > Run Auto-Label on Inbox</span> processes your 50 most recent unread emails.
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">📝</span> Response Templates (Customizable!)
+        </div>
+        <div class="section-content">
+          <p>Create email templates for quick responses.</p>
+
+          <h3>How to Add/Edit Templates</h3>
+          <ol>
+            <li>Go to the <span class="sheet-ref">Response Templates</span> sheet</li>
+            <li>Add new rows or edit existing ones</li>
+            <li>Use placeholders for dynamic content</li>
+          </ol>
+
+          <h3>Template Placeholders</h3>
+          <table>
+            <tr><th>Placeholder</th><th>Replaced With</th></tr>
+            <tr><td><code>{{Name}}</code></td><td>Recipient's name</td></tr>
+            <tr><td><code>{{Original Subject}}</code></td><td>Original email subject</td></tr>
+            <tr><td><code>{{Property}}</code></td><td>Property address</td></tr>
+            <tr><td><code>{{Date}}</code></td><td>Current date</td></tr>
+          </table>
+
+          <h3>Default Templates Included</h3>
+          <ul>
+            <li><strong>Quick Acknowledgment</strong> - Auto-reply to inquiries</li>
+            <li><strong>Out of Office</strong> - Vacation response</li>
+            <li><strong>Showing Follow-up</strong> - Post-showing message</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">🎯</span> Lead Capture
+        </div>
+        <div class="section-content">
+          <p>Automatically captures leads from emails to the <span class="sheet-ref">Captured Leads</span> sheet.</p>
+
+          <h3>Lead Sources Detected</h3>
+          <ul>
+            <li>Zillow, Realtor.com, Homes.com, Trulia, Redfin</li>
+            <li>Emails with "new lead", "inquiry", "showing request"</li>
+          </ul>
+
+          <h3>Lead Status Options</h3>
+          <p>Use the Status dropdown in the Captured Leads sheet:</p>
+          <ul>
+            <li><strong>New</strong> - Just captured, needs review</li>
+            <li><strong>Contacted</strong> - You've reached out</li>
+            <li><strong>Added to CRM</strong> - Transferred to your CRM</li>
+            <li><strong>Not a Lead</strong> - False positive</li>
+            <li><strong>Spam</strong> - Junk lead</li>
+          </ul>
+
+          <div class="feature-how">
+            <strong>Run Lead Capture:</strong> <span class="menu-path">Gmail Tools > Capture Leads from Email</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">📊</span> Email Reports & Statistics
+        </div>
+        <div class="section-content">
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="feature-title">Email Statistics</div>
+              <div class="feature-desc">View email volume, send/receive counts</div>
+              <div class="feature-how"><span class="menu-path">Reports > Email Statistics</span></div>
+            </div>
+            <div class="feature-card green">
+              <div class="feature-title">Unread Summary</div>
+              <div class="feature-desc">See your unread emails organized by label</div>
+              <div class="feature-how"><span class="menu-path">Reports > Unread Summary</span></div>
+            </div>
+            <div class="feature-card orange">
+              <div class="feature-title">Daily Digest</div>
+              <div class="feature-desc">Summary of yesterday's email activity</div>
+              <div class="feature-how"><span class="menu-path">Gmail Tools > Generate Daily Digest</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">🧹</span> Email Cleanup
+        </div>
+        <div class="section-content">
+          <h3>Archive Old Emails</h3>
+          <table>
+            <tr><th>Function</th><th>What It Does</th><th>Default Age</th></tr>
+            <tr>
+              <td><span class="menu-path">Archive Old Newsletters</span></td>
+              <td>Archives newsletters older than X days</td>
+              <td>7 days</td>
+            </tr>
+            <tr>
+              <td><span class="menu-path">Archive Old Promotions</span></td>
+              <td>Archives promotional emails</td>
+              <td>3 days</td>
+            </tr>
+          </table>
+
+          <div class="warning">
+            <strong>Note:</strong> Archiving moves emails out of inbox but doesn't delete them. You can always find them in "All Mail".
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LABEL MIGRATION SECTION -->
+    <div id="section-migration" class="section-container" style="display:none;">
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">🔄</span> Label Migration Overview
+        </div>
+        <div class="section-content">
+          <p>The Label Migration tool helps you transition from old, unorganized Gmail labels to the new structured label system.</p>
+
+          <h3>Why Migrate Labels?</h3>
+          <ul>
+            <li>Consolidate scattered labels into organized categories</li>
+            <li>Move emails from old labels to new hierarchical structure</li>
+            <li>Clean up duplicate or inconsistent labeling</li>
+            <li>Preserve all your emails while reorganizing</li>
+          </ul>
+
+          <div class="tip">
+            <strong>Safe Process:</strong> Migration moves emails to new labels but doesn't delete old labels. You can verify everything worked before manually deleting old labels.
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">📋</span> How to Use Label Migration
+        </div>
+        <div class="section-content">
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="feature-title">Step 1: Scan Labels</div>
+              <div class="feature-desc">Scans all your Gmail labels and populates the migration sheet</div>
+              <div class="feature-how">
+                <strong>Menu:</strong> Gmail Tools > Label Migration > Scan Labels
+              </div>
+            </div>
+            <div class="feature-card green">
+              <div class="feature-title">Step 2: Review Suggestions</div>
+              <div class="feature-desc">System auto-suggests new labels based on keywords</div>
+              <div class="feature-how">
+                Review the "Suggested New Label" column and adjust as needed using the dropdown
+              </div>
+            </div>
+            <div class="feature-card orange">
+              <div class="feature-title">Step 3: Select Labels to Migrate</div>
+              <div class="feature-desc">Check the "Move Emails?" box for labels you want to migrate</div>
+              <div class="feature-how">
+                Only checked labels will be processed during migration
+              </div>
+            </div>
+            <div class="feature-card purple">
+              <div class="feature-title">Step 4: Preview & Execute</div>
+              <div class="feature-desc">Preview changes, then execute the migration</div>
+              <div class="feature-how">
+                <strong>Menu:</strong> Gmail Tools > Label Migration > Preview Migration, then Execute Migration
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">🎯</span> Auto-Suggestion Keywords
+        </div>
+        <div class="section-content">
+          <p>Labels are automatically matched to new labels based on these keywords:</p>
+          <table>
+            <tr><th>Keywords in Old Label</th><th>Suggested New Label</th></tr>
+            <tr><td>buyer, buyers</td><td>Clients/Buyers</td></tr>
+            <tr><td>seller, sellers</td><td>Clients/Sellers</td></tr>
+            <tr><td>zillow, z-lead</td><td>Leads/Zillow</td></tr>
+            <tr><td>realtor.com, realtor com</td><td>Leads/Realtor.com</td></tr>
+            <tr><td>title, escrow</td><td>Vendors/Title</td></tr>
+            <tr><td>lender, mortgage, loan</td><td>Vendors/Lenders</td></tr>
+            <tr><td>inspector, inspection</td><td>Vendors/Inspectors</td></tr>
+            <tr><td>brokerage, broker</td><td>Admin/Brokerage</td></tr>
+            <tr><td>mls</td><td>Admin/MLS</td></tr>
+            <tr><td>action, urgent, todo</td><td>Action Required</td></tr>
+            <tr><td>waiting, follow up</td><td>Waiting For Response</td></tr>
+          </table>
+
+          <div class="tip">
+            <strong>Manual Override:</strong> You can always select a different target label from the dropdown if the auto-suggestion isn't right.
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">📊</span> Migration Sheet Columns
+        </div>
+        <div class="section-content">
+          <table>
+            <tr><th>Column</th><th>Description</th></tr>
+            <tr>
+              <td><strong>Current Label</strong></td>
+              <td>The existing Gmail label name</td>
+            </tr>
+            <tr>
+              <td><strong>Email Count</strong></td>
+              <td>Number of emails with this label (up to 500)</td>
+            </tr>
+            <tr>
+              <td><strong>Suggested New Label</strong></td>
+              <td>Dropdown to select target label for migration</td>
+            </tr>
+            <tr>
+              <td><strong>Move Emails?</strong></td>
+              <td>Check this box to include in migration</td>
+            </tr>
+            <tr>
+              <td><strong>Status</strong></td>
+              <td>Pending, Done, Skipped, or Error message</td>
+            </tr>
+          </table>
+
+          <div class="warning">
+            <strong>After Migration:</strong> Old labels remain in Gmail. Once you verify emails moved correctly, you can manually delete old labels in Gmail settings.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DRIVE SECTION -->
+    <div id="section-drive" class="section-container" style="display:none;">
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">📂</span> Drive Folder Structure
+        </div>
+        <div class="section-content">
+          <h3>Folders Created</h3>
+          <p>Running "Create Folder Structure" creates:</p>
+          <table>
+            <tr><th>Main Folder</th><th>Subfolders</th></tr>
+            <tr><td><strong>Listings</strong></td><td>Active, Pending, Sold, Coming Soon, Photos & Media</td></tr>
+            <tr><td><strong>Clients</strong></td><td>Buyers, Sellers, Prospects, Past Clients</td></tr>
+            <tr><td><strong>Transactions</strong></td><td>2025, 2026, Templates, Disclosures</td></tr>
+            <tr><td><strong>Marketing</strong></td><td>Flyers, Social Media, Branding, Email Templates</td></tr>
+            <tr><td><strong>Operations</strong></td><td>Policies, Training, Vendor Contacts, Licenses & Docs</td></tr>
+          </table>
+
+          <div class="tip">
+            <strong>Share the Root Folder:</strong> Share the main folder with team members and they'll get access to all subfolders.
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">🔍</span> Drive Inventory & Analysis
+        </div>
+        <div class="section-content">
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="feature-title">Scan My Drive</div>
+              <div class="feature-desc">Catalogs all files in your Drive with metadata</div>
+              <div class="feature-how"><span class="menu-path">Drive Tools > Scan My Drive</span></div>
+            </div>
+            <div class="feature-card green">
+              <div class="feature-title">Find Duplicates</div>
+              <div class="feature-desc">Identifies files with same name and size</div>
+              <div class="feature-how"><span class="menu-path">Drive Tools > Find Duplicates</span></div>
+            </div>
+            <div class="feature-card orange">
+              <div class="feature-title">Find Large Files</div>
+              <div class="feature-desc">Lists files over 10MB for cleanup</div>
+              <div class="feature-how"><span class="menu-path">Drive Tools > Find Large Files</span></div>
+            </div>
+            <div class="feature-card red">
+              <div class="feature-title">Find Old Files</div>
+              <div class="feature-desc">Lists files not modified in over 1 year</div>
+              <div class="feature-how"><span class="menu-path">Drive Tools > Find Old Files</span></div>
+            </div>
+            <div class="feature-card purple">
+              <div class="feature-title">Move Recommendations</div>
+              <div class="feature-desc">Suggests where to move files based on content</div>
+              <div class="feature-how"><span class="menu-path">Drive Tools > Generate Move Recommendations</span></div>
+            </div>
+          </div>
+
+          <h3>How Move Recommendations Work</h3>
+          <p>Files are analyzed and matched to folders based on keywords:</p>
+          <table>
+            <tr><th>Target Folder</th><th>Keywords Matched</th></tr>
+            <tr><td>Listings</td><td>listing, mls, property, home, house, condo</td></tr>
+            <tr><td>Clients</td><td>client, buyer, seller, customer, contact</td></tr>
+            <tr><td>Transactions</td><td>contract, agreement, closing, escrow, title, deed</td></tr>
+            <tr><td>Marketing</td><td>flyer, brochure, marketing, social, ad, promo</td></tr>
+            <tr><td>Operations</td><td>policy, procedure, training, license, insurance</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- FUNCTION RUNNER SECTION -->
+    <div id="section-runner" class="section-container" style="display:none;">
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">▶️</span> Function Runner Overview
+        </div>
+        <div class="section-content">
+          <p>The Function Runner provides a safe, user-friendly way to execute any available function without opening the Apps Script editor.</p>
+
+          <h3>Why Use Function Runner?</h3>
+          <ul>
+            <li>Run any function by simply checking a box</li>
+            <li>See all available functions with descriptions</li>
+            <li>Confirmation dialogs for destructive operations</li>
+            <li>Execution logging with timestamps and results</li>
+            <li>No need to access Apps Script editor</li>
+          </ul>
+
+          <div class="tip">
+            <strong>Safety First:</strong> Functions marked "Requires Confirm" will always show a confirmation dialog before running. Destructive functions are highlighted in red.
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">🚀</span> How to Use Function Runner
+        </div>
+        <div class="section-content">
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="feature-title">Step 1: Initialize</div>
+              <div class="feature-desc">Create the Function Runner sheet with all available functions</div>
+              <div class="feature-how">
+                <strong>Menu:</strong> Setup & Initialize > Initialize Function Runner
+              </div>
+            </div>
+            <div class="feature-card green">
+              <div class="feature-title">Step 2: Enable Trigger</div>
+              <div class="feature-desc">Set up the checkbox trigger for automatic execution</div>
+              <div class="feature-how">
+                <strong>Menu:</strong> Setup & Initialize > Setup Function Runner Trigger
+              </div>
+            </div>
+            <div class="feature-card orange">
+              <div class="feature-title">Step 3: Run Functions</div>
+              <div class="feature-desc">Check the "Run" box next to any function to execute it</div>
+              <div class="feature-how">
+                The function runs immediately, and results appear in the Last Result column
+              </div>
+            </div>
+          </div>
+
+          <div class="warning">
+            <strong>Important:</strong> The trigger must be set up once for checkbox execution to work. Without the trigger, you can still run functions from the menu.
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">📊</span> Function Runner Sheet Columns
+        </div>
+        <div class="section-content">
+          <table>
+            <tr><th>Column</th><th>Description</th></tr>
+            <tr>
+              <td><strong>Run</strong></td>
+              <td>Checkbox - check to execute the function</td>
+            </tr>
+            <tr>
+              <td><strong>Function Name</strong></td>
+              <td>The name of the function</td>
+            </tr>
+            <tr>
+              <td><strong>File</strong></td>
+              <td>Which .gs file contains this function</td>
+            </tr>
+            <tr>
+              <td><strong>Category</strong></td>
+              <td>Gmail, Drive, System, etc.</td>
+            </tr>
+            <tr>
+              <td><strong>Description</strong></td>
+              <td>What the function does</td>
+            </tr>
+            <tr>
+              <td><strong>Requires Confirm</strong></td>
+              <td>Yes = shows confirmation dialog before running</td>
+            </tr>
+            <tr>
+              <td><strong>Last Run</strong></td>
+              <td>Timestamp of last execution</td>
+            </tr>
+            <tr>
+              <td><strong>Last Result</strong></td>
+              <td>Success or Error message from last run</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">📋</span> Available Functions
+        </div>
+        <div class="section-content">
+          <h3>Gmail Functions</h3>
+          <table>
+            <tr><th>Function</th><th>Description</th><th>Confirm?</th></tr>
+            <tr><td><code>createAllLabels</code></td><td>Create all configured Gmail labels</td><td>No</td></tr>
+            <tr><td><code>deleteAllCreatedLabels</code></td><td>Remove all created labels (DESTRUCTIVE)</td><td>Yes</td></tr>
+            <tr><td><code>listExistingLabels</code></td><td>List all Gmail labels to sheet</td><td>No</td></tr>
+            <tr><td><code>autoLabelInbox</code></td><td>Apply auto-label rules to inbox</td><td>No</td></tr>
+            <tr><td><code>scanExistingLabels</code></td><td>Scan labels for migration</td><td>No</td></tr>
+            <tr><td><code>executeLabelMigration</code></td><td>Execute label migration</td><td>Yes</td></tr>
+            <tr><td><code>generateDailyDigest</code></td><td>Generate email digest</td><td>No</td></tr>
+            <tr><td><code>captureLeadsFromEmail</code></td><td>Capture leads from emails</td><td>No</td></tr>
+          </table>
+
+          <h3>Drive Functions</h3>
+          <table>
+            <tr><th>Function</th><th>Description</th><th>Confirm?</th></tr>
+            <tr><td><code>createFolderStructure</code></td><td>Create folder structure in Drive</td><td>Yes</td></tr>
+            <tr><td><code>scanMyDrive</code></td><td>Scan and catalog all Drive files</td><td>No</td></tr>
+            <tr><td><code>findDuplicates</code></td><td>Find potential duplicate files</td><td>No</td></tr>
+            <tr><td><code>findLargeFiles</code></td><td>Find files larger than 10MB</td><td>No</td></tr>
+            <tr><td><code>generateRecommendations</code></td><td>Generate move recommendations</td><td>No</td></tr>
+            <tr><td><code>clearInventory</code></td><td>Clear inventory data (DESTRUCTIVE)</td><td>Yes</td></tr>
+          </table>
+
+          <h3>System Functions</h3>
+          <table>
+            <tr><th>Function</th><th>Description</th><th>Confirm?</th></tr>
+            <tr><td><code>initializeAllWorkspaceTools</code></td><td>Initialize all sheets</td><td>Yes</td></tr>
+            <tr><td><code>createAllTriggers</code></td><td>Create all automation triggers</td><td>Yes</td></tr>
+            <tr><td><code>removeAllTriggers</code></td><td>Remove all triggers (DESTRUCTIVE)</td><td>Yes</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHEETS GUIDE SECTION -->
+    <div id="section-sheets" class="section-container" style="display:none;">
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">📊</span> Working with the Sheets
+        </div>
+        <div class="section-content">
+          <p>Many features are controlled by editing data in the sheets. Here's how:</p>
+
+          <h3>Auto-Label Rules Sheet</h3>
+          <p>Control which emails get which labels automatically.</p>
+          <div class="feature-card">
+            <div class="feature-title">Adding a New Rule</div>
+            <ol>
+              <li>Go to the <span class="sheet-ref">Auto-Label Rules</span> sheet</li>
+              <li>Add a new row at the bottom</li>
+              <li>Enter the label name (e.g., "Clients/Buyers")</li>
+              <li>Add email patterns to match in "From Contains"</li>
+              <li>Or add subject keywords in "Subject Contains"</li>
+              <li>Check the "Active" checkbox</li>
+            </ol>
+          </div>
+
+          <div class="tip">
+            <strong>Example:</strong> To auto-label emails from your lender:<br>
+            Label: <code>Vendors/Lenders</code><br>
+            From Contains: <code>@mylender.com, <lender-email-placeholder></code>
+          </div>
+
+          <h3>Response Templates Sheet</h3>
+          <p>Add your own email templates.</p>
+          <div class="feature-card green">
+            <div class="feature-title">Adding a New Template</div>
+            <ol>
+              <li>Go to the <span class="sheet-ref">Response Templates</span> sheet</li>
+              <li>Add a new row</li>
+              <li>Enter: Template Name, Subject, Body, Use Case</li>
+              <li>Use <code>{{Name}}</code> for the recipient's name</li>
+            </ol>
+          </div>
+
+          <h3>Captured Leads Sheet</h3>
+          <p>Manage leads captured from email.</p>
+          <div class="feature-card orange">
+            <div class="feature-title">Working with Leads</div>
+            <ul>
+              <li>Click the Status dropdown to update lead status</li>
+              <li>Click the Email Link to open the original email</li>
+              <li>Add notes in any empty columns you create</li>
+              <li>Sort by Date Captured to see newest first</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRIGGERS/AUTOMATION SECTION -->
+    <div id="section-triggers" class="section-container" style="display:none;">
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">⚡</span> Automatic Triggers
+        </div>
+        <div class="section-content">
+          <p>Set up automated tasks that run on a schedule.</p>
+
+          <h3>Available Triggers</h3>
+          <table>
+            <tr><th>Trigger</th><th>What It Does</th><th>Frequency</th><th>How to Enable</th></tr>
+            <tr>
+              <td><span class="trigger-badge">Auto-Label</span></td>
+              <td>Labels new emails automatically</td>
+              <td>Every 15 min</td>
+              <td>Already active by default</td>
+            </tr>
+            <tr>
+              <td><span class="trigger-badge">Daily Digest</span></td>
+              <td>Sends email summary each morning</td>
+              <td>Daily at 8am</td>
+              <td><span class="menu-path">Setup > Create Daily Digest Trigger</span></td>
+            </tr>
+            <tr>
+              <td><span class="trigger-badge">Lead Capture</span></td>
+              <td>Captures leads hourly</td>
+              <td>Every hour</td>
+              <td><span class="menu-path">Setup > Create Lead Capture Trigger</span></td>
+            </tr>
+          </table>
+
+          <h3>Managing Triggers</h3>
+          <div class="feature-card">
+            <div class="feature-title">View/Remove Triggers</div>
+            <ol>
+              <li>Open Google Apps Script: <span class="menu-path">Extensions > Apps Script</span></li>
+              <li>Click the clock icon (Triggers) in the left sidebar</li>
+              <li>View all active triggers</li>
+              <li>Click the three dots menu to delete any trigger</li>
+            </ol>
+          </div>
+
+          <div class="warning">
+            <strong>Note:</strong> Triggers run in the background even when the spreadsheet is closed. Delete them if you no longer need them.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADVANCED SECTION -->
+    <div id="section-advanced" class="section-container" style="display:none;">
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">🔧</span> Advanced Features
+        </div>
+        <div class="section-content">
+          <p>These features require running functions from the Apps Script editor.</p>
+
+          <h3>How to Access Apps Script</h3>
+          <ol>
+            <li>Go to <span class="menu-path">Extensions > Apps Script</span></li>
+            <li>Find the function you want to run in any .gs file</li>
+            <li>Click the function name, then click ▶ Run</li>
+          </ol>
+
+          <h3>Hidden Utility Functions</h3>
+          <table>
+            <tr><th>Function</th><th>File</th><th>What It Does</th></tr>
+            <tr>
+              <td><code>deleteLabel(name)</code></td>
+              <td>gmail-label-creator.gs</td>
+              <td>Delete a specific Gmail label</td>
+            </tr>
+            <tr>
+              <td><code>moveEmailsBetweenLabels(from, to)</code></td>
+              <td>gmail-label-creator.gs</td>
+              <td>Move all emails from one label to another</td>
+            </tr>
+            <tr>
+              <td><code>archiveByLabel(name)</code></td>
+              <td>gmail-label-creator.gs</td>
+              <td>Archive all emails with a specific label</td>
+            </tr>
+            <tr>
+              <td><code>scanSpecificFolder()</code></td>
+              <td>drive-inventory.gs</td>
+              <td>Scan a specific Drive folder (prompts for URL)</td>
+            </tr>
+            <tr>
+              <td><code>clearInventory()</code></td>
+              <td>drive-inventory.gs</td>
+              <td>Clear all inventory data</td>
+            </tr>
+            <tr>
+              <td><code>showResponseTimeReport()</code></td>
+              <td>gmail-automation.gs</td>
+              <td>See your average email response times</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">⚙️</span> Configuration Files
+        </div>
+        <div class="section-content">
+          <p>For developers/admins who want to customize defaults:</p>
+
+          <h3>Key Configuration Locations</h3>
+          <table>
+            <tr><th>File</th><th>What to Customize</th></tr>
+            <tr>
+              <td><code>config.gs</code></td>
+              <td>Company name, contact info, branding</td>
+            </tr>
+            <tr>
+              <td><code>gmail-label-creator.gs</code></td>
+              <td>LABEL_CONFIG - Label structure, auto-label rules, LABEL_PREFIX for sorting</td>
+            </tr>
+            <tr>
+              <td><code>gmail-automation.gs</code></td>
+              <td>GMAIL_CONFIG - Lead patterns, archive rules</td>
+            </tr>
+            <tr>
+              <td><code>drive-folder-setup.gs</code></td>
+              <td>FOLDER_CONFIG - Folder structure to create</td>
+            </tr>
+            <tr>
+              <td><code>drive-inventory.gs</code></td>
+              <td>INVENTORY_CONFIG - File categories, recommendations</td>
+            </tr>
+          </table>
+
+          <h3>Label Sorting Prefix</h3>
+          <p>To control where labels appear in Gmail's sidebar:</p>
+          <div class="feature-card">
+            <ol>
+              <li>Open <code>gmail-label-creator.gs</code></li>
+              <li>Find <code>LABEL_PREFIX: ''</code></li>
+              <li>Change to <code>LABEL_PREFIX: 'zz-'</code> to sort at bottom</li>
+              <li>Or use <code>LABEL_PREFIX: '00-'</code> to sort at top</li>
+              <li>Run "Delete All Created Labels" then "Create Gmail Labels"</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">🆘</span> Getting Help
+        </div>
+        <div class="section-content">
+          <p><strong>Support Email:</strong> jacob@truenorthstrategyops.com</p>
+          <p><strong>Common Issues:</strong></p>
+          <ul>
+            <li><strong>Menu not showing:</strong> Refresh the page (Ctrl+R / Cmd+R)</li>
+            <li><strong>Permission errors:</strong> Re-authorize when prompted</li>
+            <li><strong>Functions timing out:</strong> Try running on fewer items</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="close-btn" onclick="google.script.host.close()">Close</button>
+
+  <script>
+    function showSection(sectionId) {
+      // Hide all sections
+      document.querySelectorAll('.section-container').forEach(s => s.style.display = 'none');
+      // Show selected section
+      document.getElementById('section-' + sectionId).style.display = 'block';
+      // Update nav buttons
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+  </script>
+</body>
+</html>

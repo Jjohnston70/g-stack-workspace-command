@@ -1,0 +1,5 @@
+# Ignore Node.js files
+setup.js
+*.md
+*.template
+node_modules/**
